@@ -1,0 +1,39 @@
+//Table creation
+
+create table manufacturers(
+    manID int not null primary key
+        GENERATED ALWAYS AS IDENTITY
+        (START WITH 1, INCREMENT BY 1),  
+    manName varchar(100)
+);
+
+create table products(
+    productID int not null primary key
+        GENERATED ALWAYS AS IDENTITY
+        (START WITH 1, INCREMENT BY 1),  
+    productName varchar(100),
+    productPrice double,
+    productStock integer,
+    manID int,
+    FOREIGN KEY (manID) REFERENCES manufacturers(manID)
+);
+
+-----------------------------------------------------------------------------------------------------------------
+
+//Inserts
+
+INSERT INTO manufacturers (manName) VALUES
+('LG'),
+('Sony'),
+('Nvidia');
+
+INSERT INTO products (productname, productprice, productstock, manID) VALUES 
+('PlayStation 5', 5000, 0, 2),
+('LG TV', 3000, 12, 1),
+('RTX 3090', 80000, 1, 3);
+
+
+
+//
+
+

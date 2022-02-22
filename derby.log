@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Feb 21 11:49:06 CAT 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-017f-1baf-47c1-00000aecf758 
+on database directory S:\Personal Projects\Java\DB\myDB with class loader sun.misc.Launcher$AppClassLoader@61bbe9ba 
+Loaded from file:/S:/Program%20Files/Java/glassfish-4.1.1/javadb/lib/derby.jar
+java.vendor=OpenLogic-OpenJDK
+java.runtime.version=1.8.0-262-b10
+user.dir=S:\Personal Projects\Java\Personal\JavaDB
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
