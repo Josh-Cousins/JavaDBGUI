@@ -5,6 +5,8 @@
  */
 package javadb;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.*;
 
 /**
@@ -13,6 +15,13 @@ import javax.swing.*;
  */
 public class mainFrame extends javax.swing.JFrame {
 
+    public static final int UPDATE_PRODUCT = 1;
+    public static final int UPDATE_MAN = 2;
+    public static final int DELETE_PRODUCT = 3;
+    public static final int DELETE_MAN = 4;
+    public static final int ADD_PRODUCT = 5;
+    public static final int ADD_MAN = 6;
+    public int mode = 0;
     /**
      * Creates new form mainFrame
      */
@@ -25,12 +34,6 @@ public class mainFrame extends javax.swing.JFrame {
         txfManName.setEnabled(false);
         toggleButtons(false, 3);
         toggleTxfs(false);
-        try{
-            System.out.println(dbMethods.connect());
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
     }
     
     //Sets up the UI for working with products or manufacturers
@@ -121,6 +124,7 @@ public class mainFrame extends javax.swing.JFrame {
         btnConfirm = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Inventory Manager");
 
         org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, productsList, lstProducts);
         bindingGroup.addBinding(jListBinding);
@@ -149,6 +153,12 @@ public class mainFrame extends javax.swing.JFrame {
 
         lblManID.setForeground(new java.awt.Color(51, 204, 0));
         lblManID.setText("Manufacturer ID");
+
+        txfProdID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txfProdIDActionPerformed(evt);
+            }
+        });
 
         spnPrice.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
 
@@ -232,12 +242,32 @@ public class mainFrame extends javax.swing.JFrame {
         });
 
         btnDeleteProd.setText("Delete Product");
+        btnDeleteProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteProdActionPerformed(evt);
+            }
+        });
 
         btnDeleteMan.setText("Delete Manufacturer");
+        btnDeleteMan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteManActionPerformed(evt);
+            }
+        });
 
         btnAddProd.setText("Add Product");
+        btnAddProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddProdActionPerformed(evt);
+            }
+        });
 
         btnAddMan.setText("Add Manufacturer");
+        btnAddMan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddManActionPerformed(evt);
+            }
+        });
 
         btnClear.setText("Clear");
         btnClear.addActionListener(new java.awt.event.ActionListener() {
@@ -356,11 +386,12 @@ public class mainFrame extends javax.swing.JFrame {
                 }
             }
             toggleButtons(true, 3);
-
+            btnClear.setEnabled(true);
         }
         //If there was an update and nothing is selected we disable the edit buttons
         else{
             toggleButtons(false, 1);
+            btnClear.setEnabled(false);
         }
     }//GEN-LAST:event_lstProductsValueChanged
     
@@ -380,6 +411,7 @@ public class mainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_lstManValueChanged
 
     private void btnUpdateProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateProdActionPerformed
+        mode = UPDATE_PRODUCT;
         toggleManOrProd(true);
         toggleButtons(false, 2);
         toggleTxfs(rootPaneCheckingEnabled);
@@ -400,10 +432,41 @@ public class mainFrame extends javax.swing.JFrame {
         toggleButtons(false, 3);
         toggleTxfs(false);
         toggleManOrProd(true);
+        txfManName.setEnabled(false);
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        // TODO add your handling code here:
+        ArrayList<Object> params = new ArrayList<>();
+        switch(mode){
+            case UPDATE_PRODUCT:
+                System.out.println("product updated");
+                break;
+            case UPDATE_MAN:
+                //0 - newName | 1 - manID
+                params.add(txfManName.getText());
+                params.add(txfManID.getText());
+                dbMethods.updateDB(UPDATE_MAN, params);
+                break;
+            case DELETE_PRODUCT:
+                System.out.println("product deleted");
+                break;
+            case DELETE_MAN:
+                System.out.println("man deleted");
+                break;
+            case ADD_PRODUCT:
+                System.out.println("product added");
+                break;
+            case ADD_MAN:
+                System.out.println("man added");
+                break;
+        }
+        manufacturersList = manufacturersQuery.getResultList();
+        Vector<String> manNames = new Vector();
+        for (Manufacturers m : manufacturersList) {
+            manNames.add(m.toString());
+        }
+        lstMan.setListData(manNames);
+        lstMan.updateUI();
     }//GEN-LAST:event_btnConfirmActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
@@ -414,10 +477,33 @@ public class mainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnUpdateManActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateManActionPerformed
+        mode = UPDATE_MAN;
         toggleManOrProd(false);
         toggleButtons(false, 1);
-        toggleButtons(true, 2);
+        toggleButtons(false, 2);
+        btnUpdateMan.setEnabled(true);
+        txfManName.setEnabled(true);
     }//GEN-LAST:event_btnUpdateManActionPerformed
+
+    private void btnDeleteProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteProdActionPerformed
+        mode = DELETE_PRODUCT;
+    }//GEN-LAST:event_btnDeleteProdActionPerformed
+
+    private void btnDeleteManActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteManActionPerformed
+        mode = DELETE_MAN;
+    }//GEN-LAST:event_btnDeleteManActionPerformed
+
+    private void btnAddProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProdActionPerformed
+        mode = ADD_PRODUCT;
+    }//GEN-LAST:event_btnAddProdActionPerformed
+
+    private void btnAddManActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddManActionPerformed
+        mode = ADD_MAN;
+    }//GEN-LAST:event_btnAddManActionPerformed
+
+    private void txfProdIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txfProdIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txfProdIDActionPerformed
 
     /**
      * @param args the command line arguments
@@ -452,6 +538,16 @@ public class mainFrame extends javax.swing.JFrame {
                 new mainFrame().setVisible(true);
             }
         });
+    }
+    
+    //A way to get data from the gui in other classes
+    public int getManID(){
+        int manID = Integer.parseInt(txfManID.getText());
+        return manID;
+    }
+    public int getProdID(){
+        int prodID = Integer.parseInt(txfProdID.getText());
+        return prodID;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -489,4 +585,5 @@ public class mainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txfProdName;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+    
 }
