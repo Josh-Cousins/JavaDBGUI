@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package javadb;
+import java.sql.SQLException;
 import javax.swing.*;
 
 /**
@@ -19,7 +20,29 @@ public class mainFrame extends javax.swing.JFrame {
         initComponents();
         //Initial setup
         lstMan.setEnabled(false);
+        txfManID.setEnabled(false);
+        txfProdID.setEnabled(false);
+        txfManName.setEnabled(false);
         toggleButtons(false, 3);
+        toggleTxfs(false);
+        try{
+            System.out.println(dbMethods.connect());
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    //Sets up the UI for working with products or manufacturers
+    public void toggleManOrProd(boolean activeProduct){
+        if (activeProduct) {
+            lstProducts.setEnabled(true);
+            lstMan.setEnabled(false);
+        }
+        else{
+            lstProducts.setEnabled(false);
+            lstMan.setEnabled(true);
+        }
     }
     
     //Toggles manufacturer or product buttons or both (Enable/disable)
@@ -45,6 +68,13 @@ public class mainFrame extends javax.swing.JFrame {
                 btnUpdateMan.setEnabled(toggle);
                 break;
         }
+    }
+    
+    //Method to toggle editable text fields
+    public void toggleTxfs(boolean toggle){
+        txfProdName.setEnabled(toggle);
+        spnPrice.setEnabled(toggle);
+        spnStock.setEnabled(toggle);
     }
 
     /**
@@ -73,10 +103,10 @@ public class mainFrame extends javax.swing.JFrame {
         lblManID = new javax.swing.JLabel();
         txfProdID = new javax.swing.JTextField();
         txfProdName = new javax.swing.JTextField();
-        txfProdPrice = new javax.swing.JTextField();
-        txfProdStock = new javax.swing.JTextField();
         txfManName = new javax.swing.JTextField();
         txfManID = new javax.swing.JTextField();
+        spnPrice = new javax.swing.JSpinner();
+        spnStock = new javax.swing.JSpinner();
         scrlpnMans = new javax.swing.JScrollPane();
         lstMan = new javax.swing.JList<>();
         pnlButtons = new javax.swing.JPanel();
@@ -86,6 +116,9 @@ public class mainFrame extends javax.swing.JFrame {
         btnDeleteMan = new javax.swing.JButton();
         btnAddProd = new javax.swing.JButton();
         btnAddMan = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
+        btnExit = new javax.swing.JButton();
+        btnConfirm = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,17 +132,27 @@ public class mainFrame extends javax.swing.JFrame {
         });
         scrlpnMain.setViewportView(lstProducts);
 
+        lblProdID.setForeground(new java.awt.Color(204, 51, 0));
         lblProdID.setText("ID");
 
+        lblProdName.setForeground(new java.awt.Color(204, 51, 0));
         lblProdName.setText("Name");
 
+        lblProdPrice.setForeground(new java.awt.Color(204, 51, 0));
         lblProdPrice.setText("Price");
 
+        lblProdStock.setForeground(new java.awt.Color(204, 51, 0));
         lblProdStock.setText("Stock");
 
+        lblManName.setForeground(new java.awt.Color(51, 204, 0));
         lblManName.setText("Manufacturer");
 
+        lblManID.setForeground(new java.awt.Color(51, 204, 0));
         lblManID.setText("Manufacturer ID");
+
+        spnPrice.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 1.0d));
+
+        spnStock.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
         javax.swing.GroupLayout pnlDataLayout = new javax.swing.GroupLayout(pnlData);
         pnlData.setLayout(pnlDataLayout);
@@ -128,11 +171,11 @@ public class mainFrame extends javax.swing.JFrame {
                 .addGroup(pnlDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txfProdID)
                     .addComponent(txfProdName)
-                    .addComponent(txfProdPrice)
-                    .addComponent(txfProdStock)
                     .addComponent(txfManName)
-                    .addComponent(txfManID, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(60, Short.MAX_VALUE))
+                    .addComponent(txfManID, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(spnPrice)
+                    .addComponent(spnStock))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlDataLayout.setVerticalGroup(
             pnlDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -148,11 +191,11 @@ public class mainFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(pnlDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblProdPrice)
-                    .addComponent(txfProdPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spnPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pnlDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblProdStock)
-                    .addComponent(txfProdStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(spnStock, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(pnlDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblManName)
@@ -175,8 +218,18 @@ public class mainFrame extends javax.swing.JFrame {
         scrlpnMans.setViewportView(lstMan);
 
         btnUpdateProd.setText("Update Product");
+        btnUpdateProd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateProdActionPerformed(evt);
+            }
+        });
 
         btnUpdateMan.setText("Update Manufacturer");
+        btnUpdateMan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateManActionPerformed(evt);
+            }
+        });
 
         btnDeleteProd.setText("Delete Product");
 
@@ -186,6 +239,27 @@ public class mainFrame extends javax.swing.JFrame {
 
         btnAddMan.setText("Add Manufacturer");
 
+        btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+
+        btnExit.setText("Exit");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
+        });
+
+        btnConfirm.setText("Confirm");
+        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConfirmActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlButtonsLayout = new javax.swing.GroupLayout(pnlButtons);
         pnlButtons.setLayout(pnlButtonsLayout);
         pnlButtonsLayout.setHorizontalGroup(
@@ -193,14 +267,19 @@ public class mainFrame extends javax.swing.JFrame {
             .addGroup(pnlButtonsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnAddProd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnDeleteProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnUpdateProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnUpdateMan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnDeleteMan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnAddMan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnlButtonsLayout.createSequentialGroup()
+                        .addGroup(pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnClear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAddProd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDeleteProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnUpdateProd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnUpdateMan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnDeleteMan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAddMan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnConfirm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         pnlButtonsLayout.setVerticalGroup(
@@ -218,7 +297,13 @@ public class mainFrame extends javax.swing.JFrame {
                 .addGroup(pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddProd)
                     .addComponent(btnAddMan))
-                .addContainerGap(139, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnClear)
+                    .addComponent(btnConfirm))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnExit)
+                .addContainerGap(71, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -229,7 +314,7 @@ public class mainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(scrlpnMain))
+                    .addComponent(scrlpnMain, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(scrlpnMans)
@@ -256,29 +341,83 @@ public class mainFrame extends javax.swing.JFrame {
     
     //Updates the info on the gui when the value is changed - products only
     private void lstProductsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstProductsValueChanged
-        Products selected = productsList.get(lstProducts.getSelectedIndex());
-        txfProdName.setText(selected.getProductname());
-        txfProdPrice.setText(selected.getProductprice()+"");
-        txfProdID.setText(selected.getProductid()+"");
-        txfProdStock.setText(selected.getProductstock()+"");
-        //Links the Manufacturers list to the products lis
-        Manufacturers partner = selected.getManid();
-        for (int i = 0; i < manufacturersList.size(); i++) {
-            if (manufacturersList.get(i).getManid()==partner.getManid()) {
-                lstMan.setSelectedIndex(i);
-            }
-        }
+        //If there is something selected we update the GUI
         if (lstProducts.getSelectedIndex()>-1) {
+            Products selected = productsList.get(lstProducts.getSelectedIndex());
+            txfProdName.setText(selected.getProductname());
+            spnPrice.setValue(selected.getProductprice());
+            txfProdID.setText(selected.getProductid()+"");
+            spnStock.setValue(selected.getProductstock());
+            //Links the Manufacturers list to the products lis
+            Manufacturers partner = selected.getManid();
+            for (int i = 0; i < manufacturersList.size(); i++) {
+                if (manufacturersList.get(i).getManid()==partner.getManid()) {
+                lstMan.setSelectedIndex(i);
+                }
+            }
             toggleButtons(true, 3);
+
+        }
+        //If there was an update and nothing is selected we disable the edit buttons
+        else{
+            toggleButtons(false, 1);
         }
     }//GEN-LAST:event_lstProductsValueChanged
     
     //Updates info on the GUI - Manufacturers only
     private void lstManValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstManValueChanged
-        Manufacturers selected = manufacturersList.get(lstMan.getSelectedIndex());
-        txfManID.setText(selected.getManid()+"");
-        txfManName.setText(selected.getManname());
+        if (lstMan.getSelectedIndex()>-1) {
+            Manufacturers selected = manufacturersList.get(lstMan.getSelectedIndex());
+            txfManID.setText(selected.getManid()+"");
+            txfManName.setText(selected.getManname());
+            if (lstProducts.getSelectedIndex()>-1) {
+                toggleButtons(false, 1);
+            }
+            else{
+                toggleButtons(true, 1);
+            }
+        }
     }//GEN-LAST:event_lstManValueChanged
+
+    private void btnUpdateProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateProdActionPerformed
+        toggleManOrProd(true);
+        toggleButtons(false, 2);
+        toggleTxfs(rootPaneCheckingEnabled);
+        btnAddProd.setEnabled(false);
+        btnDeleteProd.setEnabled(false);
+        lstProducts.setEnabled(false);
+    }//GEN-LAST:event_btnUpdateProdActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        lstProducts.clearSelection();
+        lstMan.clearSelection();
+        txfManID.setText("");
+        txfManName.setText("");
+        txfProdID.setText("");
+        txfProdName.setText("");
+        spnPrice.setValue(0);
+        spnStock.setValue(0);
+        toggleButtons(false, 3);
+        toggleTxfs(false);
+        toggleManOrProd(true);
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnConfirmActionPerformed
+
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        int close = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?");
+        if (close==JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnUpdateManActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateManActionPerformed
+        toggleManOrProd(false);
+        toggleButtons(false, 1);
+        toggleButtons(true, 2);
+    }//GEN-LAST:event_btnUpdateManActionPerformed
 
     /**
      * @param args the command line arguments
@@ -319,8 +458,11 @@ public class mainFrame extends javax.swing.JFrame {
     private javax.persistence.EntityManager JavaDBPUEntityManager;
     private javax.swing.JButton btnAddMan;
     private javax.swing.JButton btnAddProd;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnDeleteMan;
     private javax.swing.JButton btnDeleteProd;
+    private javax.swing.JButton btnExit;
     private javax.swing.JButton btnUpdateMan;
     private javax.swing.JButton btnUpdateProd;
     private javax.swing.JLabel lblManID;
@@ -339,12 +481,12 @@ public class mainFrame extends javax.swing.JFrame {
     private javax.persistence.Query productsQuery;
     private javax.swing.JScrollPane scrlpnMain;
     private javax.swing.JScrollPane scrlpnMans;
+    private javax.swing.JSpinner spnPrice;
+    private javax.swing.JSpinner spnStock;
     private javax.swing.JTextField txfManID;
     private javax.swing.JTextField txfManName;
     private javax.swing.JTextField txfProdID;
     private javax.swing.JTextField txfProdName;
-    private javax.swing.JTextField txfProdPrice;
-    private javax.swing.JTextField txfProdStock;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

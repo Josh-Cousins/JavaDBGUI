@@ -70,7 +70,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="pnlData" max="32767" attributes="0"/>
-                  <Component id="scrlpnMain" max="32767" attributes="0"/>
+                  <Component id="scrlpnMain" pref="288" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -138,12 +138,12 @@
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="txfProdID" alignment="0" max="32767" attributes="0"/>
                       <Component id="txfProdName" alignment="0" max="32767" attributes="0"/>
-                      <Component id="txfProdPrice" alignment="0" max="32767" attributes="0"/>
-                      <Component id="txfProdStock" alignment="0" max="32767" attributes="0"/>
                       <Component id="txfManName" alignment="0" max="32767" attributes="0"/>
-                      <Component id="txfManID" alignment="0" min="-2" pref="90" max="-2" attributes="0"/>
+                      <Component id="txfManID" alignment="0" pref="90" max="32767" attributes="0"/>
+                      <Component id="spnPrice" max="32767" attributes="0"/>
+                      <Component id="spnStock" alignment="0" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="60" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -163,12 +163,12 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblProdPrice" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txfProdPrice" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="spnPrice" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblProdStock" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txfProdStock" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="spnStock" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -188,31 +188,49 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="lblProdID">
           <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="33" red="cc" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="ID"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblProdName">
           <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="33" red="cc" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Name"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblProdPrice">
           <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="33" red="cc" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Price"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblProdStock">
           <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="33" red="cc" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Stock"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblManName">
           <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="cc" red="33" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Manufacturer"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblManID">
           <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="0" green="cc" red="33" type="rgb"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Manufacturer ID"/>
           </Properties>
         </Component>
@@ -220,13 +238,23 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txfProdName">
         </Component>
-        <Component class="javax.swing.JTextField" name="txfProdPrice">
-        </Component>
-        <Component class="javax.swing.JTextField" name="txfProdStock">
-        </Component>
         <Component class="javax.swing.JTextField" name="txfManName">
         </Component>
         <Component class="javax.swing.JTextField" name="txfManID">
+        </Component>
+        <Component class="javax.swing.JSpinner" name="spnPrice">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel initial="0.0" minimum="0.0" numberType="java.lang.Double" stepSize="1.0" type="number"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JSpinner" name="spnStock">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel initial="0" minimum="0" numberType="java.lang.Integer" stepSize="1" type="number"/>
+            </Property>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>
@@ -258,15 +286,22 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="btnAddProd" max="32767" attributes="0"/>
-                      <Component id="btnDeleteProd" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnUpdateProd" alignment="0" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="btnUpdateMan" max="32767" attributes="0"/>
-                      <Component id="btnDeleteMan" max="32767" attributes="0"/>
-                      <Component id="btnAddMan" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnExit" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="btnClear" max="32767" attributes="0"/>
+                              <Component id="btnAddProd" max="32767" attributes="0"/>
+                              <Component id="btnDeleteProd" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnUpdateProd" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="btnUpdateMan" max="32767" attributes="0"/>
+                              <Component id="btnDeleteMan" max="32767" attributes="0"/>
+                              <Component id="btnAddMan" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnConfirm" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
                   <EmptySpace pref="18" max="32767" attributes="0"/>
               </Group>
@@ -290,7 +325,14 @@
                       <Component id="btnAddProd" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnAddMan" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="139" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="btnClear" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnConfirm" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="btnExit" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="71" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -300,11 +342,17 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Update Product"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateProdActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnUpdateMan">
           <Properties>
             <Property name="text" type="java.lang.String" value="Update Manufacturer"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateManActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnDeleteProd">
           <Properties>
@@ -325,6 +373,30 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Add Manufacturer"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnClear">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Clear"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClearActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnExit">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Exit"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExitActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnConfirm">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Confirm"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfirmActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
